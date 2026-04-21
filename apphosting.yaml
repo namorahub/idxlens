@@ -1,0 +1,11 @@
+runConfig:
+  runtime: nodejs20
+  concurrency: 80
+  minInstances: 0
+  maxInstances: 10
+
+env:
+  - variable: ANTHROPIC_API_KEY
+    secret: ANTHROPIC_API_KEY
+  - variable: ALLOWED_ORIGIN
+    value: "*"

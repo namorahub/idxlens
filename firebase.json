@@ -1,0 +1,29 @@
+{
+  "apphosting": [
+    {
+      "backendId": "namoraquant-backend",
+      "rootDir": ".",
+      "ignore": [
+        "node_modules",
+        ".git",
+        ".cursor",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        ".env",
+        ".env.local",
+        ".env.*.local"
+      ]
+    },
+    {
+      "backendId": "idxlens",
+      "rootDir": "/",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log",
+        "functions"
+      ]
+    }
+  ]
+}
