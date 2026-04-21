@@ -25,7 +25,9 @@ export async function POST(req: NextRequest) {
   }
 
   const origin = req.headers.get("origin") ?? "";
-  if (allowed && origin !== allowed) {
+  const originOk =
+    !allowed || allowed === "*" || origin === allowed;
+  if (!originOk) {
     return NextResponse.json(
       { error: "Forbidden" },
       { status: 403, headers: cors },
