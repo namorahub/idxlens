@@ -6,7 +6,7 @@ import { IndonesiaNewsSection } from '@/components/IndonesiaNewsSection';
 import { LiveStreamsSection } from '@/components/LiveStreamsSection';
 import type { NewsDashboard, NewsHeadline, SentimentLabel } from '@/types/news-dashboard';
 
-type ApiOk = { dashboard: NewsDashboard; model?: string };
+type ApiOk = { dashboard: NewsDashboard };
 type ApiErr = { error: string };
 
 function sentimentStyles(s: SentimentLabel): string {
@@ -63,7 +63,6 @@ export function NamoraQuant() {
   const [input, setInput] = useState('');
   const [dashboard, setDashboard] = useState<NewsDashboard | null>(null);
   const [lastRun, setLastRun] = useState<Date | null>(null);
-  const [model, setModel] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -90,11 +89,9 @@ export function NamoraQuant() {
       if (!res.ok) {
         setError(data.error || `Permintaan gagal (${res.status})`);
         setDashboard(null);
-        setModel(null);
         return;
       }
       setDashboard(data.dashboard);
-      setModel(data.model ?? null);
       setLastRun(new Date());
     } catch (e) {
       setError(e instanceof Error ? e.message : 'Jaringan atau server error.');
@@ -218,21 +215,16 @@ export function NamoraQuant() {
 
       {dashboard ? (
         <>
-          <div className="mb-8 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-            <div>
-              <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
-                {dashboard.pageTitle ?? `${dashboard.ticker} — Berita & konteks AI`}
-              </h2>
-              <p className="mt-1 max-w-3xl text-sm text-slate-500">
-                {dashboard.pageSubtitle}
-                {dashboard.companyName ? (
-                  <span className="block pt-1 text-slate-400">{dashboard.companyName}</span>
-                ) : null}
-              </p>
-            </div>
-            {model ? (
-              <p className="font-mono text-[11px] text-slate-600">model · {model}</p>
-            ) : null}
+          <div className="mb-8">
+            <h2 className="text-xl font-semibold text-slate-50 sm:text-2xl">
+              {dashboard.pageTitle ?? `${dashboard.ticker} — Berita & konteks AI`}
+            </h2>
+            <p className="mt-1 max-w-3xl text-sm text-slate-500">
+              {dashboard.pageSubtitle}
+              {dashboard.companyName ? (
+                <span className="block pt-1 text-slate-400">{dashboard.companyName}</span>
+              ) : null}
+            </p>
           </div>
 
           <div className="grid gap-8 lg:grid-cols-[minmax(0,1.15fr)_minmax(0,0.85fr)]">
@@ -243,7 +235,8 @@ export function NamoraQuant() {
                   Headline terpilih
                 </h3>
                 <p className="mb-4 text-xs text-slate-600">
-                  Berita terkini yang relevan untuk ticker ini (beberapa hari terakhir).
+                  Berita fundamental terkait emiten, ±90 hari terakhir (analisis teknikal & rekomendasi
+                  broker dikecualikan).
                 </p>
                 <div className="divide-y-0">
                   {dashboard.headlines.length ? (

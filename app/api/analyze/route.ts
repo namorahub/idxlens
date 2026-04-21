@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 
+import { filterFundamentalRecentHeadlines } from "@/lib/filter-fundamental-headlines";
 import { buildNewsAnalysisUserPrompt } from "@/lib/news-prompt";
 import { parseNewsDashboardFromText } from "@/lib/parse-dashboard";
 
 type AnthropicContentBlock = { type?: string; text?: string };
 
 const SYSTEM =
-  "Anda membantu membangun dashboard analisis berita saham Indonesia. Output akhir HANYA objek JSON valid sesuai permintaan pengguna — tanpa markdown, tanpa blok kode, tanpa teks pembuka atau penutup.";
+  "Anda membantu membangun dashboard analisis berita saham Indonesia: hanya narasi fundamental (bukan teknikal/trading). Output akhir HANYA objek JSON valid sesuai permintaan pengguna — tanpa markdown, tanpa blok kode, tanpa teks pembuka atau penutup.";
 
 export async function POST(req: NextRequest) {
   const body = (await req.json()) as { ticker?: unknown };
@@ -42,7 +43,9 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const userContent = buildNewsAnalysisUserPrompt(ticker);
+  const referenceDate = new Date();
+  const referenceDateISO = referenceDate.toISOString().slice(0, 10);
+  const userContent = buildNewsAnalysisUserPrompt(ticker, { referenceDateISO });
 
   const payload: Record<string, unknown> = {
     model: "claude-haiku-4-5-20251001",
@@ -109,7 +112,10 @@ export async function POST(req: NextRequest) {
   }
 
   try {
-    const dashboard = parseNewsDashboardFromText(text, ticker);
+    const dashboard = filterFundamentalRecentHeadlines(
+      parseNewsDashboardFromText(text, ticker),
+      referenceDate,
+    );
     return NextResponse.json(
       { dashboard, model: data.model },
       { headers: cors },
