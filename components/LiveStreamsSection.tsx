@@ -43,11 +43,6 @@ export function LiveStreamsSection() {
           </div>
         ))}
       </div>
-
-      <p className="mt-6 text-[11px] leading-relaxed text-slate-600">
-        Pemutar dimuat otomatis (tanpa suara dulu — sesuai kebijakan browser). Buka suara lewat kontrol
-        YouTube jika perlu. Jika tidak ada siaran live, pemutar dapat menampilkan pesan dari YouTube.
-      </p>
     </section>
   );
 }
